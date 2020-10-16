@@ -1,0 +1,50 @@
+<html>
+    <head>
+        <title>Demo</title>
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+            body { background-color: #EEE; color: #333; font-family: 'Roboto', sans-serif; padding: 20px; }
+            .canvas { position: fixed; width: 800px; height: 600px;  left: 50%; top: 50%; transform: translate(-50%, -50%); background-color: #EEE; }
+            .canvasFull { position: fixed; width: 100%; height: 100%; left: 0; top: 0; background-color: #EEE; }
+            .rounded { border-radius: 10px; }
+        </style>
+
+        <script type="application/javascript" src="./rex.js"></script>
+        <script type="application/javascript">
+            document.addEventListener('DOMContentLoaded', () => {
+                let rex = new RexJS(document.getElementById('rex'));
+                let pos = new Vector2(rex.width/2 - 20, rex.height/2 - 20);
+                let speed = 400;
+
+                rex.clearColor = '#DDD';
+                rex.setColor('#000');
+
+                rex.setUpdateFunction(() => {
+                    rex.clear();
+                    rex.fillRect(pos.x, pos.y, 40, 40);
+                    rex.repaint();
+
+                    let deltaSpeed = speed * rex.getTimeDelta();
+                    let direction = new Vector2(0, 0);
+                    if (rex.keyPressed('A')) direction.x = -1;
+                    if (rex.keyPressed('D')) direction.x = 1;
+                    if (rex.keyPressed('W')) direction.y = -1;
+                    if (rex.keyPressed('S')) direction.y = 1;
+
+                    direction = direction.normalized();
+                    pos.addVector(direction.multiply(deltaSpeed));
+                    pos.x = rex.clamp(pos.x, 0, rex.width - 40);
+                    pos.y = rex.clamp(pos.y, 0, rex.height - 40);
+                });
+            });
+        </script>
+    </head>
+    <body>
+
+    <div><b>RexJS demo</b></div>
+    <small>Controls: WASD</small>
+
+    <canvas id="rex" class="canvas rounded">Canvas not supported</canvas>
+
+    </body>
+</html>
